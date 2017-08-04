@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>フレームレートを指定する</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <style>
+  section h4 {
+    margin-bottom: 5px;
+  }
+  section ul {
+    margin-top: 5px;
+  }
+  canvas {
+    background-color: #e3e3e3;
+  }
+  input[id="inputLoad"] {
+    width: 300px;
+  }
+  output {
+    color: red;
+  }
+</style>
+</head>
+<body>
+  <h1>フレームレートを指定する</h1>
+
+
+  <section>
+    <code>setTimeout</code> を使って、1フレームごとに <code>requestAnimationFrame</code> を実行してみる。
+  </section>
+
+  <canvas id="canvas"></canvas>
+
+  <section>
+    フレームレート: <input id="inputFps" type="range" min="10" max="100" step="1" value="30"> 現在の値 <output id="outputFps"></output> fps (約 <output id="outputSpf"></output> ms/フレーム)
+  </section>
+
+  <section>
+    1フレーム毎に実行するdrawImage()の回数: <input id="inputLoad" type="range" min="10" max="4000" step="10" value="10"> 現在の値 <output id="outputLoad"></output>
+  </section>
+
+  <section style="margin-top:10px;">
+  次のフレームが開始されるまでに実際に掛かった時間: <output id="result"></output> ms
+  </section>
+
+  <section>
+    <h4>JavaScriptコードのポイントとなる部分</h4>
+    <pre><code>var fps = 30;
+function loop() {
+  setTimeout(function() {
+    requestAnimationFrame(loop);
+
+    // ここで Canvasに描画する処理を実行する
+
+  }, 1000 / fps); // フレーム毎に実行させる
+}
+loop();</code></pre>
+  </section>
+
+  <section>
+    <h4>メモ</h4>
+    <ul>
+      <li>軽い処理であれば、1/fps 秒ごとに実行させることができる。</li>
+      <li>一度に実行する描画処理が多くなると、次に実行するタイミングが遅れていく。</li>
+    </ul>
+  </section>
+
+  <footer>
+    <section>
+      <h4>参考</h4>
+      <ul>
+        <li><a href="http://creativejs.com/resources/requestanimationframe/">requestAnimationFrame | CreativeJS</a></li>
+      </ul>
+    </section>
+  </footer>
+
+<script>
+
+var inputLoad;
+var outputLoad;
+var load;
+
+var inputFps;
+var outputFps;
+var fps;
+var outputSpf;
+var spf;
+
+var img;
+var ctx;
+var output;
+var angle = 1;
+
+var draw = function(load) {
+  ctx.clearRect(0,0,400,400);
+  for (var i=0; i<load; i++) {
+    ctx.save();
+    ctx.translate(200,200);
+    ctx.rotate(angle);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+    angle++;
+  }
+};
+
+function loadImage(imagePath) {
+  return new Promise(function(resolve, reject) {
+    var img = new Image();
+    img.addEventListener('load', function() {
+      resolve(img);
+    });
+    img.src = imagePath;
+  });
+}
+
+window.onload = function() {
+
+  inputLoad = document.querySelector('#inputLoad');
+  load = parseInt(inputLoad.value);
+  outputLoad = document.querySelector('#outputLoad');
+  outputLoad.textContent = load;
+
+  inputFps = document.querySelector('#inputFps');
+  fps = parseInt(inputFps.value);
+  outputFps = document.querySelector('#outputFps');
+  outputFps.textContent = fps;
+
+  outputSpf = document.querySelector('#outputSpf');
+  spf = 1000 / fps
+  outputSpf.textContent = spf.toFixed(0);
+
+  var canvas = document.querySelector('#canvas');
+  canvas.width = 400;
+  canvas.height = 400;
+  ctx = canvas.getContext('2d');
+  output = document.querySelector('#result');
+
+  loadImage("./img/icon.png").then(function(image){
+    img = image;
+    var time;
+    function loop() {
+      setTimeout(function() {
+        requestAnimationFrame(loop);
+
+        var now = new Date().getTime();
+        var dt = now - (time || now);
+        time = now;
+        output.textContent = dt;
+
+        // do some drawings
+        draw(load);
+
+      }, 1000 / fps);
+    }
+    loop();
+  });
+
+  inputFps.addEventListener('change', (event) => {
+    fps = parseInt(event.currentTarget.value);
+    outputFps.textContent = fps;
+
+    spf = 1000 / fps;
+    outputSpf.textContent = spf.toFixed(0);
+  });
+
+  inputLoad.addEventListener('change', (event) => {
+    load = parseInt(event.currentTarget.value);
+    outputLoad.textContent = load;
+  });
+};
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
