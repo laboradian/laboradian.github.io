@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvasを画像ファイルとしてダウンロードする</title>
+<style>
+section h4 {
+  margin-bottom: 5px;
+}
+section ul {
+  margin-top: 5px;
+}
+canvas {
+  background-color: #e3e3e3;
+}
+
+</style>
+</head>
+<body>
+  <h1>Canvasを画像ファイルとしてダウンロードする</h1>
+
+  <canvas id="canvas"></canvas>
+
+  <section>
+    速度: 遅い <input id="inputAngleSpeed" type="range" min="0" max="100" step="1" value="2"> 速い
+  </section>
+  <section>
+    <button type="button" id="btnDownload">画像としてダウンロードする</button>
+  </section>
+
+  <section>
+    <h4>ポイント</h4>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob">HTMLCanvasElement.toBlob()</a> を使うと、Canvas をBlobオブジェクトに変換することができる。</li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/URL/createObjectURL">window.URL.createObjectURL</a> を使うと、引数で渡されたBlobオブジェクトを表すURLを生成することができる。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>メモ</h4>
+    <ul>
+      <li>保存先のパスを選んでダウンロードすることはできない？</li>
+    </ul>
+  </section>
+
+  <footer>
+    <section>
+      <h4>参考</h4>
+      <ul>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Blob">Blob - Web API インターフェイス | MDN</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob">HTMLCanvasElement.toBlob() - Web APIs | MDN</a></li>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/API/URL">URL - Web API インターフェイス | MDN</a>
+          <ul>
+            <li><a href="https://developer.mozilla.org/ja/docs/Web/API/URL/createObjectURL">window.URL.createObjectURL - Web API インターフェイス | MDN</a></li>
+            <li><a href="https://developer.mozilla.org/ja/docs/Web/API/URL/revokeObjectURL">window.URL.revokeObjectURL - Web API インターフェイス | MDN</a></li>
+          </ul>
+        </li>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/HTML/Element/a">a 要素 - HTML | MDN</a></li>
+        <li><a href="https://azu.github.io/t_wada_generator/">t_wada generator</a></li>
+      </ul>
+    </section>
+  </footer>
+
+<script>
+var canvas;
+var inputAngleSpeed;
+var angleSpeed = 2;
+
+window.onload = function() {
+
+  inputAngleSpeed = document.querySelector('#inputAngleSpeed');
+  angleSpeed = parseInt(inputAngleSpeed.value);
+
+  canvas = document.querySelector('#canvas');
+  canvas.width = 400;
+  canvas.height = 400;
+  var ctx = canvas.getContext('2d');
+
+  var loadImage = function(imagePath) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+      img.addEventListener('load', function() {
+        resolve(img);
+      });
+      img.src = imagePath;
+    });
+  }
+
+  loadImage("./img/icon.png").then(function(image) {
+
+    var angle = 0;
+    var loop = function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.rotate( angle * Math.PI / 180 );
+      ctx.drawImage(image, 40, 40);
+      ctx.restore();
+
+      angle += angleSpeed;
+      window.requestAnimationFrame(loop);
+    };
+    window.requestAnimationFrame(loop);
+  });
+
+  inputAngleSpeed.addEventListener('change', (event) => {
+    angleSpeed = parseInt(event.currentTarget.value);
+  });
+
+  document.querySelector('#btnDownload').addEventListener("click", function(event) {
+    canvas.toBlob(function(blob) {
+      var a = document.createElement("a");
+      a.download = "icon.png";
+      a.href = URL.createObjectURL(blob);
+      a.target = '_blank';
+      a.click();
+      URL.revokeObjectURL(blob);
+    }, "image/png", 0.9);
+  });
+
+};
+</script>
+</body>
+</html>
