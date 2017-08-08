@@ -78,13 +78,11 @@
 <script>
 window.onload = function() {
   document.querySelector('#btnCalc').addEventListener('click', function() {
-    var p = parseFloat(document.querySelector('#p').value);
-    var n = parseInt(document.querySelector('#n').value);
-    var factorRel = [1.65, 1.96, 2.58][document.querySelector("#reliability").selectedIndex];
-
-    var valL = p - factorRel * Math.sqrt((p * (1 - p))/n);
-    var valH = p + factorRel * Math.sqrt((p * (1 - p))/n);
-
+    var p = parseFloat(document.querySelector('#p').value),
+        n = parseInt(document.querySelector('#n').value),
+        factorRel = [1.65, 1.96, 2.58][document.querySelector("#reliability").selectedIndex],
+        valL = p - factorRel * Math.sqrt((p * (1 - p))/n),
+        valH = p + factorRel * Math.sqrt((p * (1 - p))/n);
     document.querySelector('#result').textContent =`${valL.toFixed(3)} < p < ${valH.toFixed(3)}`
   });
 };
