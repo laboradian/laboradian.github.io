@@ -7,6 +7,9 @@
   <title>母比率の信頼区間を求める</title>
   <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">-->
   <style>
+  body {
+    margin: 20px;
+  }
   footer {
     text-align: right;
   }
@@ -67,8 +70,8 @@
         <option value="99">99%</option>
         </select></label>
 
-        <label>標本比率 `\hat{p}`: <input type="text" style="width:80px;text-align:right;" id="p" value="0.5"></input> <small>(0 `\leq` `\hat{p}` `\leq` 1)</small></label>
-        <label>試行回数 `n`: <input type="text" style="width:80px;text-align:right;" id="n" value="10"></input> <small>(整数)</small></label>
+        <label>標本比率 `\hat{p}`: <input type="text" style="width:80px;text-align:right;" id="p" value="0.5" /> <small>(0 `\leq` `\hat{p}` `\leq` 1)</small></label>
+        <label>試行回数 `n`: <input type="text" style="width:80px;text-align:right;" id="n" value="10" /> <small>(整数)</small></label>
       <button type="button" id="btnCalc">母比率の信頼区間を算出する</button>
       <output id="result"></output>
     </section>
