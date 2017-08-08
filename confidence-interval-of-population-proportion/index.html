@@ -13,7 +13,8 @@
   footer {
     text-align: right;
   }
-  section h4 {
+  section h2 {
+    font-size: 1.2em;
     margin-bottom: 5px;
   }
   section ul {
@@ -41,27 +42,27 @@
   <h1>母比率の信頼区間を求める</h1>
 
   <section>
-    <h4>基本的な考え方</h4>
+    <h2>基本的な考え方</h2>
     「成功確率が `p` (母比率)である試行を `n` 回行うときに成功する確率を `\hat{p}` (標本比率)とすると、`p` は ○%の確率で以下の範囲に入っているはずだ。」
   </section>
 
   <section>
-    <h4>90%の信頼区間の場合</h4>
+    <h2>90%の信頼区間の場合</h2>
 \[
 \hat{p} - 1.65 \times \sqrt{\frac{p(1-p)}{n}} \leq p \leq \hat{p} + 1.65 \times \sqrt{\frac{p(1-p)}{n}}
 \]
-    <h4>95%の信頼区間の場合</h4>
+    <h2>95%の信頼区間の場合</h2>
 \[
 \hat{p} - 1.96 \times \sqrt{\frac{p(1-p)}{n}} \leq p \leq \hat{p} + 1.96 \times \sqrt{\frac{p(1-p)}{n}}
 \]
-    <h4>99%の信頼区間の場合</h4>
+    <h2>99%の信頼区間の場合</h2>
 \[
 \hat{p} - 2.58 \times \sqrt{\frac{p(1-p)}{n}} \leq p \leq \hat{p} + 2.58 \times \sqrt{\frac{p(1-p)}{n}}
 \]
   </section>
 
   <section>
-    <h4>母比率 `p` の信頼区間を算出してみる</h4>
+    <h2>母比率 `p` の信頼区間を算出してみる</h2>
     <section class="sectionCalc">
 
       <label>信頼性: <select id="reliability">
